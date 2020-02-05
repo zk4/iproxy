@@ -27,7 +27,7 @@ coverage:
 	pytest --cov=iproxy/ tests/
 
 dev:
-	python -m iproxy 
+	python -m iproxy -c ./candidates.txt
 
 install: uninstall
 	pip install . 
@@ -35,10 +35,6 @@ install: uninstall
 uninstall:
 	pip uninstall iproxy
 
-run:
-	iproxy 2
-	python -m iproxy eat -c 2
-	
 
 all: rm uninstall install run 
 

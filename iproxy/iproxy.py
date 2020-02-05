@@ -59,7 +59,7 @@ def speedTest(proxyUrl,url) :
                 break
             speed = dl/1024//(time.time() - start)
             logger.debug("[%s%s] %s k/bps" % ('=' * done, ' ' * (50-done),speed ))
-            logger.debug("%s: %s k/bps" % (proxyUrl,speed))
+            logger.debug("%s: %s kb/s" % (proxyUrl,speed))
             if speed < lowerSpeedLimit:
                 lowerSpeedTimes+=1
                 if lowerSpeedTimes > lowerSpeedTimesMax:
@@ -67,7 +67,7 @@ def speedTest(proxyUrl,url) :
                     return
             else:
                 lowerSpeedTimes=0
-        logger.info(f'good! {speed} {proxyUrl}')
+        logger.info(f'good! {speed} kb/s {proxyUrl}')
 
 
 
@@ -87,7 +87,7 @@ def feed(count):
 
 def main(args):
     with ThreadPoolExecutor(max_workers=10) as executor:
-        for proxyUrl in lines("./candidates.txt"):
+        for proxyUrl in lines(args.check):
             executor.submit(combine,proxyUrl)
 
 def entry_point():
@@ -97,10 +97,10 @@ def entry_point():
 
 
 def createParse():
-    print(color.R+"Don`t use public proxy to access private data when SSL invalidated! MITM is comming!"+color.W)
+    print(color.R+"WARNNING: Don`t use public proxy to access private data when SSL invalidated! You may under MITM attack if so!"+color.W)
     parser = argparse.ArgumentParser( formatter_class=argparse.ArgumentDefaultsHelpFormatter, description="")
     # subparsers = parser.add_subparsers()
-    # eat_parser = subparsers.add_parser('eat',formatter_class=argparse.ArgumentDefaultsHelpFormatter, description="",  help='sub command demo')
-    # eat_parser.add_argument('-c', '--count',type=int,required=False, help='carrots count', default="")  
+    # check_parser = subparsers.add_parser('check',formatter_class=argparse.ArgumentDefaultsHelpFormatter, description="",  help='check proxy connection from your pc')
+    parser.add_argument('-c', '--check',type=str,required=False, help='local candidates file, content format schema://ip:port', default="./candidates.txt")  
 
     return parser
