@@ -26,8 +26,11 @@ coverage-html:
 coverage:
 	pytest --cov=iproxy/ tests/
 
-dev:
+check:
 	python -m iproxy -c ./candidates.txt
+
+get:
+	proxychains4 python -m iproxy -g
 
 install: uninstall
 	pip install . 

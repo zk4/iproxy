@@ -16,7 +16,7 @@ from requests.exceptions import ConnectionError
 
 # 保存代理的文件名
 # Save proxies file name
-CHECKED_PROXY = 'unchecked_proxy_spysone'
+CHECKED_PROXY = 'candidates'
 
 url = 'http://spys.one/en/socks-proxy-list/'
 
@@ -116,10 +116,10 @@ def main():
     html = get_index(xpp, xf1, xf2, xf4, xf5)
     infos = get_proxy_info(html)
     parse_proxy_info(html, infos)
-    with open(file_path_unchecked,'a+') as f:
-        f.write(time.strftime(">>>%Y-%m-%d %H:%M:%S", time.localtime()) + '\n')
+    with open(file_path_unchecked,'w') as f:
+        # f.write(time.strftime(">>>%Y-%m-%d %H:%M:%S", time.localtime()) + '\n')
         for proxy in unchecked:
-            f.write(proxy + '\n')
+            f.write("socks5h://"+proxy + '\n')
     print('Save to {}.\nDone.'.format(file_path_unchecked))
 
 
