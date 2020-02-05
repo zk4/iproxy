@@ -27,7 +27,7 @@ def check(proxyUrl,targetUrl="http://www.google.com"):
     proxyUrl = proxyUrl.strip()
     proxies = { "https":proxyUrl ,"http": proxyUrl}
 
-    r = requests.get(targetUrl,proxies = proxies,timeout=5)
+    r = requests.get(targetUrl,proxies = proxies,timeout=3)
     if r.status_code == 200:
         logger.debug("google ok: %s" % proxyUrl)
         google_ok_urls.add(proxyUrl)
@@ -41,6 +41,9 @@ def backup(proxyUrl):
     with open("./google_ok_urls.txt",'w') as f:
         for line in google_ok_urls:
             f.write(line+"\n")
+    with open("./history_urls.txt",'w') as f:
+        for line in history_urls:
+            f.write(line)
 
 
 
@@ -63,7 +66,7 @@ def speedTest(proxyUrl,url) :
     logger.debug(f'speed: {proxyUrl}          ')
     start = time.time()
     proxies = { "https":proxyUrl ,"http": proxyUrl}
-    r = requests.get(url,proxies=proxies, stream=True)
+    r = requests.get(url,proxies=proxies, stream=True,timeout=5)
     total_length = r.headers.get('content-length')
     dl = 0
     if total_length is None: # no content length header
@@ -74,10 +77,10 @@ def speedTest(proxyUrl,url) :
              logger.debug(f'content length is too small {proxyUrl}')
              return 
         logger.debug(f'content lenght is {total_length}')
-        lowerSpeedTimesMax = 100
+        lowerSpeedTimesMax = 50
         lowerSpeedLimit = 10
         lowerSpeedTimes = 0
-        testLengthPercentage = 0.01
+        testLengthPercentage = 0.005
         
         for chunk in r.iter_content(1024):
             dl += len(chunk)
@@ -119,7 +122,7 @@ def main(args):
 
     if args.check_file:
         no_duplicates = set()
-        with ThreadPoolExecutor(max_workers=10) as executor:
+        with ThreadPoolExecutor(max_workers=100) as executor:
             for proxyUrl in candidates(args.all_candidates):
                 if proxyUrl not in no_duplicates:
                     history_urls.add(proxyUrl)
