@@ -23,7 +23,7 @@ history_urls = set()
 
 def check(proxyUrl,targetUrl="http://www.google.com"):
     proxyUrl = proxyUrl.strip()
-    logger.info(f'check {proxyUrl}')
+    logger.debug(f'check {proxyUrl}')
     proxyUrl = proxyUrl.strip()
     proxies = { "https":proxyUrl ,"http": proxyUrl}
 
@@ -99,14 +99,14 @@ def speedTest(proxyUrl,url) :
         lowerSpeedTimesMax = 50
         lowerSpeedLimit = 10
         lowerSpeedTimes = 0
-        testLengthPercentage = 0.005
+        testLengthPercentage = 0.01
         
         for chunk in r.iter_content(1024):
             dl += len(chunk)
             if (dl / total_length) > testLengthPercentage:
                 break
             speed = dl/1024//(time.time() - start)
-            logger.debug("%s: %s kb/s" % (proxyUrl,speed))
+            logger.info("%s: %s kb/s" % (proxyUrl,speed))
             if speed < lowerSpeedLimit:
                 lowerSpeedTimes+=1
                 if lowerSpeedTimes > lowerSpeedTimesMax:

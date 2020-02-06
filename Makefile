@@ -28,6 +28,9 @@ coverage:
 
 check:
 	python -m iproxy -c ./candidates.txt
+	# pkill haproxy 
+	# ps aux | grep haproxy
+	# haproxy -f ./haproxy.cfg
 
 get:
 	proxychains4 python -m iproxy -g
