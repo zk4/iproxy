@@ -97,11 +97,11 @@ def speedTest(proxyUrl,url) :
              return 
         logger.debug(f'content lenght is {total_length}')
         lowerSpeedTimesMax = 50
-        lowerSpeedLimit = 10
+        lowerSpeedLimit = 5
         lowerSpeedTimes = 0
         testLengthPercentage = 0.01
         
-        for chunk in r.iter_content(1024):
+        for chunk in r.iter_content(10240):
             dl += len(chunk)
             if (dl / total_length) > testLengthPercentage:
                 break
@@ -114,7 +114,7 @@ def speedTest(proxyUrl,url) :
                     return
             else:
                 lowerSpeedTimes=0
-        logger.info(f'good! {speed} kb/s {proxyUrl}')
+        logger.error(f'good! {speed} kb/s {proxyUrl}')
         good_urls.add(proxyUrl)
 
 
