@@ -124,7 +124,7 @@ def main(args):
     if args.debug:
         for handler in logger.handlers:
             if handler.get_name() == 'console':
-                handler.setLevel(logging.INFO)
+                handler.setLevel(logging.DEBUG)
 
     if args.get_candidates:
         get_candidates()
