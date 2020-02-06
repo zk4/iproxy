@@ -64,10 +64,10 @@ handlers:
 root:
     level: INFO
     handlers: [console]
-    propagate: no
+    propagate: yes
 
 loggers:
     logx:
         level: DEBUG
         handlers: [console, info_file_handler, error_file_handler, critical_file_handler, debug_file_handler, warn_file_handler]
-        propagate: no
+        propagate: yes

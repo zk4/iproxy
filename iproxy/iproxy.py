@@ -34,7 +34,23 @@ def check(proxyUrl,targetUrl="http://www.google.com"):
         return True
     return False
 
+def gen_haproxy_cfg():
+    haproxy_basic = ''
+    with open("./haproxy_basic.cfg",'r') as f:
+        for line in f:
+            haproxy_basic+= line
+    idx = 1
+    for line in good_urls:
+        a = ":".join(line.split("//")[1:])
+        print(a)
+        haproxy_basic += f"server s{idx} {a} check\n"
+        idx += 1
+
+    with open("./haproxy.cfg",'w') as f:
+        f.write(haproxy_basic)
+
 def backup(proxyUrl):
+
     with open("./good_urls.txt",'w') as f:
         for line in good_urls:
             f.write(line+"\n")
@@ -48,7 +64,6 @@ def backup(proxyUrl):
     with open("./history_urls.txt",'w') as f:
         for line in history_urls:
             f.write(line)
-
 
 
 def candidate(filename):
@@ -119,7 +134,6 @@ def feed(count):
     return count * 2
 
 def main(args):
-    logger = logging.getLogger()
 
     if args.debug:
         for handler in logger.handlers:
@@ -141,6 +155,8 @@ def main(args):
 
         executor.shutdown()
         backup("./good_urls.txt")
+
+        gen_haproxy_cfg()
         print("end ..")
 
 
