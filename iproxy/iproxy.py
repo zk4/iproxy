@@ -41,9 +41,10 @@ def backup(proxyUrl):
     with open("./google_ok_urls.txt",'w') as f:
         for line in google_ok_urls:
             f.write(line+"\n")
-    with open("./history_urls.txt",'r') as f:
-        for line in f:
-            history_urls.add(line)
+    if os.path.exists("./history_urls.txt"):
+        with open("./history_urls.txt",'r') as f:
+            for line in f:
+                history_urls.add(line)
     with open("./history_urls.txt",'w') as f:
         for line in history_urls:
             f.write(line)
@@ -118,6 +119,12 @@ def feed(count):
     return count * 2
 
 def main(args):
+    logger = logging.getLogger()
+
+    if args.debug:
+        for handler in logger.handlers:
+            if handler.get_name() == 'console':
+                handler.setLevel(logging.INFO)
 
     if args.get_candidates:
         get_candidates()
@@ -151,5 +158,6 @@ def createParse():
     parser.add_argument('-c', '--check_file',type=str,required=False, help='local candidates file, content format schema://ip:port', default="./candidates.txt")  
     parser.add_argument('-g', '--get_candidates', action='store_true', help='candidates web sites, content format schema://ip:port')  
     parser.add_argument('-a', '--all_candidates', action='store_true',default=False, help='if test all candidates in history_urls.txt')  
+    parser.add_argument('-d', '--debug', action='store_true',default=False, help='debug mode, show more log')  
 
     return parser
