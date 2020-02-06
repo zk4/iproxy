@@ -71,5 +71,5 @@ env-rm:
 
 env:
 	python3 -m venv env
-	. env/bin/activate
+	source env/bin/activate
 
