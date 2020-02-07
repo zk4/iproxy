@@ -1,3 +1,4 @@
+.SILENT: watch
 
 rm:
 	find . -name '*.pyc' -exec rm -f {} +
@@ -27,6 +28,7 @@ coverage:
 	pytest --cov=iproxy/ tests/
 
 proxy: get check haproxy
+
 
 watch:
 	while :; do make proxy; sleep 3600; done

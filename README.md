@@ -7,7 +7,7 @@ There are lot of prons by trandtional way:
 - You are always swithing proxy address(default every 1 hour), make you being tracked harder.
 - You are always using the fatest proxy this tool can ever find.
 - It does not matter even using VPS for proxing, only if VPS is the fatest.
--
+- Reload haproxy is seamless enough. You won't even notice it reloaded.
 
 ## config files
 `always_test_urls.txt`
@@ -32,6 +32,12 @@ all addresses iproxy have processed.
 make proxy 
 	
 ```
+
+
+## Advices
+- Don't use load balance proxing web surfing. The slowest speed will probably determine your final speed. That't not we want.
+- But if you are downloading by proxy. load blance should be a good mechanism.
+
 ## you can try get list from here,but quality is not good
 https://github.com/clarketm/proxy-list
 

@@ -104,7 +104,7 @@ def speedTest(proxyUrl,url) :
         lowerSpeedTimesMax = 20
         lowerSpeedLimit = 50
         lowerSpeedTimes = 0
-        testLengthPercentage = 0.02
+        testLengthPercentage = 0.05
         
         for chunk in r.iter_content(10240):
             dl += len(chunk)
