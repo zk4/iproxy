@@ -13,8 +13,8 @@ import logging
 setup_logging()
 logger = logging.getLogger(__name__)
 
-# for use
-good_urls= set()
+# for use, sort by speed
+good_urls= {}
 
 google_ok_urls= set()
 
@@ -40,10 +40,13 @@ def gen_haproxy_cfg():
         for line in f:
             haproxy_basic+= line
     idx = 1
-    for line in good_urls:
+    for k,line in dict(sorted(good_urls.items(),reverse=True)).items():
         a = ":".join(line.split("//")[1:])
         print(a)
-        haproxy_basic += f"server s{idx} {a} check\n"
+
+        # only write the fatest proxy to haproxy.cfg
+        if idx == 1:
+            haproxy_basic += f"\tserver s{idx} {a} check weight {k//100}\n"
         idx += 1
 
     with open("./haproxy.cfg",'w') as f:
@@ -52,7 +55,7 @@ def gen_haproxy_cfg():
 def backup(proxyUrl):
 
     with open("./good_urls.txt",'w') as f:
-        for line in good_urls:
+        for k,line in good_urls.items():
             f.write(line+"\n")
     with open("./google_ok_urls.txt",'w') as f:
         for line in google_ok_urls:
@@ -85,7 +88,7 @@ def speedTest(proxyUrl,url) :
     logger.debug(f'speed: {proxyUrl}          ')
     start = time.time()
     proxies = { "https":proxyUrl ,"http": proxyUrl}
-    r = requests.get(url,proxies=proxies, stream=True,timeout=5)
+    r = requests.get(url,proxies=proxies, stream=True,timeout=3)
     total_length = r.headers.get('content-length')
     dl = 0
     if total_length is None: # no content length header
@@ -96,8 +99,8 @@ def speedTest(proxyUrl,url) :
              logger.debug(f'content length is too small {proxyUrl}')
              return 
         logger.debug(f'content lenght is {total_length}')
-        lowerSpeedTimesMax = 50
-        lowerSpeedLimit = 5
+        lowerSpeedTimesMax = 20
+        lowerSpeedLimit = 50
         lowerSpeedTimes = 0
         testLengthPercentage = 0.01
         
@@ -115,7 +118,7 @@ def speedTest(proxyUrl,url) :
             else:
                 lowerSpeedTimes=0
         logger.error(f'good! {speed} kb/s {proxyUrl}')
-        good_urls.add(proxyUrl)
+        good_urls[int(speed)]= proxyUrl
 
 
 
@@ -135,10 +138,6 @@ def feed(count):
 
 def main(args):
 
-    if args.debug:
-        for handler in logger.handlers:
-            if handler.get_name() == 'console':
-                handler.setLevel(logging.DEBUG)
 
     if args.get_candidates:
         get_candidates()
