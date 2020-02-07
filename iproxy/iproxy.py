@@ -79,6 +79,7 @@ def candidates(all_candidates=False):
     yield from candidate("./google_ok_urls.txt")
     yield from candidate("./good_urls.txt")
     yield from candidate("./candidates.txt")
+    yield from candidate("../always_test_urls.txt")
     if all_candidates:
         yield from candidate("./history_urls.txt")
 

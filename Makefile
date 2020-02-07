@@ -36,7 +36,7 @@ check:
 	python -m iproxy -c ./candidates.txt
 
 get:
-	ehcho "The first start you need to proxy!"
+	echo "The first start you need to proxy!"
 	proxychains4 python -m iproxy -g
 
 install: uninstall
