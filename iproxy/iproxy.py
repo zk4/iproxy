@@ -23,16 +23,14 @@ history_urls = set()
 
 def check(proxyUrl,targetUrl="http://www.google.com"):
     proxyUrl = proxyUrl.strip()
-    logger.debug(f'check {proxyUrl}')
-    proxyUrl = proxyUrl.strip()
     proxies = { "https":proxyUrl ,"http": proxyUrl}
 
-    r = requests.get(targetUrl,proxies = proxies,timeout=3)
+    r = requests.head(targetUrl,proxies = proxies,timeout=3)
     if r.status_code == 200:
-        logger.debug("google ok: %s" % proxyUrl)
-        google_ok_urls.add(proxyUrl)
+        logger.debug("jump wall ok: %s" % proxyUrl)
         return True
     return False
+
 
 def gen_haproxy_cfg():
     haproxy_basic = ''
@@ -134,6 +132,7 @@ def speedTest(proxyUrl,url) :
 def combine(proxyUrl):
     on = check(proxyUrl)
     if on:
+        google_ok_urls.add(proxyUrl)
         try:
             speedTest(proxyUrl,"http://hnd-jp-ping.vultr.com/vultr.com.100MB.bin")
         except Exception as e:

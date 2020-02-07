@@ -29,10 +29,14 @@ coverage:
 
 proxy: get check haproxy
 
+check_down:
+	./check_down.sh
+	
+
 
 watch:
 	# refresh every 30 min
-	while :; do make proxy; sleep 1800; done
+	while :; do  make proxy; sleep 1800; done
 
 get:
 	echo "The first start you need to proxy!"
