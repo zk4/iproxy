@@ -31,7 +31,8 @@ proxy: get check haproxy
 
 
 watch:
-	while :; do make proxy; sleep 3600; done
+	# refresh every 30 min
+	while :; do make proxy; sleep 1800; done
 
 get:
 	echo "The first start you need to proxy!"

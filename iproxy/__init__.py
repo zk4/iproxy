@@ -1,5 +1,6 @@
 from .iproxy import (entry_point,
                      main,
+                     check,
                      createParse)
 from.get_candidates import main  as get_candidates
 

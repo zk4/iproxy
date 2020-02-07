@@ -138,7 +138,7 @@ def combine(proxyUrl):
             speedTest(proxyUrl,"http://hnd-jp-ping.vultr.com/vultr.com.100MB.bin")
         except Exception as e:
             logger.error("exception occures")
-            # logger.exception(e)
+            logger.exception(e)
 
 def feed(count):
     print("-------------",count)
