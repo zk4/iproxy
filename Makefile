@@ -26,18 +26,22 @@ coverage-html:
 coverage:
 	pytest --cov=iproxy/ tests/
 
-reload:
-	haproxy -f ./haproxy.cfg -p ./haproxy.pid -D -sf `cat ./haproxy.pid`
+proxy: get check haproxy
 
-proxy: get check reload
+watch:
+	while :; do make proxy; sleep 3600; done
+
+get:
+	echo "The first start you need to proxy!"
+	proxychains4 python -m iproxy -g
 
 
 check: 
 	python -m iproxy -c ./candidates.txt
 
-get:
-	echo "The first start you need to proxy!"
-	proxychains4 python -m iproxy -g
+haproxy:
+	haproxy -f ./haproxy.cfg -p ./haproxy.pid -D -sf `cat ./haproxy.pid`
+
 
 install: uninstall
 	pip install . 

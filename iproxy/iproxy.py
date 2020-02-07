@@ -49,8 +49,10 @@ def gen_haproxy_cfg():
             haproxy_basic += f"\tserver s{idx} {a} check weight {k//100}\n"
         idx += 1
 
-    with open("./haproxy.cfg",'w') as f:
-        f.write(haproxy_basic)
+    # no good url found, don`t touch haproxy.cfg.
+    if idx > 1:
+        with open("./haproxy.cfg",'w') as f:
+            f.write(haproxy_basic)
 
 def backup(proxyUrl):
 
@@ -80,8 +82,7 @@ def candidates(all_candidates=False):
     yield from candidate("./good_urls.txt")
     yield from candidate("./candidates.txt")
     yield from candidate("../always_test_urls.txt")
-    if all_candidates:
-        yield from candidate("./history_urls.txt")
+    yield from candidate("./history_urls.txt")
 
 
 def speedTest(proxyUrl,url) :
@@ -103,14 +104,14 @@ def speedTest(proxyUrl,url) :
         lowerSpeedTimesMax = 20
         lowerSpeedLimit = 50
         lowerSpeedTimes = 0
-        testLengthPercentage = 0.01
+        testLengthPercentage = 0.02
         
         for chunk in r.iter_content(10240):
             dl += len(chunk)
             if (dl / total_length) > testLengthPercentage:
                 break
             speed = dl/1024//(time.time() - start)
-            logger.info("%s: %s kb/s" % (proxyUrl,speed))
+            logger.debug("%s: %s kb/s" % (proxyUrl,speed))
             if speed < lowerSpeedLimit:
                 lowerSpeedTimes+=1
                 if lowerSpeedTimes > lowerSpeedTimesMax:
@@ -118,7 +119,7 @@ def speedTest(proxyUrl,url) :
                     return
             else:
                 lowerSpeedTimes=0
-        logger.error(f'good! {speed} kb/s {proxyUrl}')
+        logger.info(f'good! {speed} kb/s {proxyUrl}')
         good_urls[int(speed)]= proxyUrl
 
 
@@ -129,9 +130,8 @@ def combine(proxyUrl):
         try:
             speedTest(proxyUrl,"http://hnd-jp-ping.vultr.com/vultr.com.100MB.bin")
         except Exception as e:
+            logger.error("exception occures")
             # logger.exception(e)
-            pass
-import sys
 
 def feed(count):
     print("-------------",count)
