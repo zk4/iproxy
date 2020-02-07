@@ -13,7 +13,7 @@ There are lot of prons by trandtional way:
 `always_test_urls.txt`
 put any proxy you think should check every reload round. Something like v2ray, trojan porxy address.
 
-## generaete files
+## generaeted files
 `candidates.txt`
 candidate addresses pulled from internet, yet need to check for connectivty from local to google.com.
 
@@ -26,6 +26,9 @@ addresses filtered by speed and by google.com connectivty
 
 `history_urls.txt`
 all addresses iproxy have processed.
+
+`hsitory_good_urls.txt`
+addresses used to on good_urls. 
 
 ## usage 
 ``` bash

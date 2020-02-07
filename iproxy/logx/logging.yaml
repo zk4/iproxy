@@ -64,14 +64,14 @@ handlers:
 root:
     level: DEBUG
     handlers: [console]
-    propagate: yes
+    propagate: no
 
 loggers:
     logx:
         level: DEBUG
         handlers: [console, info_file_handler, error_file_handler, critical_file_handler, debug_file_handler, warn_file_handler]
-        propagate: yes
+        propagate: no
     iproxy:
         level: INFO
         handlers: [console, info_file_handler, error_file_handler, critical_file_handler, debug_file_handler, warn_file_handler]
-        propagate: yes
+        propagate: no

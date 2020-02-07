@@ -59,9 +59,16 @@ def backup(proxyUrl):
     with open("./good_urls.txt",'w') as f:
         for k,line in good_urls.items():
             f.write(line+"\n")
+
     with open("./google_ok_urls.txt",'w') as f:
         for line in google_ok_urls:
             f.write(line+"\n")
+            
+    with open("./history_good_urls.txt",'a') as f:
+        f.write(f"------------\n")
+        for k,line in good_urls.items():
+            f.write(f"{k} {line}\n")
+
     if os.path.exists("./history_urls.txt"):
         with open("./history_urls.txt",'r') as f:
             for line in f:
