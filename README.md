@@ -1,5 +1,5 @@
 ## intro
-Since a lot of proxy tools there make a proxy. But all of them needs aVPS. If you computer connecting VPS is slow, then you are doomed..
+Since a lot of proxy tools needs a VPS to work. If your computer connecting VPS is slow, then you are doomed..
 This project works in a trandtional way. Find enough addreees, choose the best one for proxy. and auto reload it by haproxy. 
 
 
