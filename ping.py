@@ -30,5 +30,6 @@ if __name__ == "__main__":
             f.write(normal.stdout)
 
             sys.exit(1)
+            print("hello")
 
     
