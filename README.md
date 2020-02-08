@@ -35,6 +35,10 @@ addresses used to on good_urls.
 make proxy 
 	
 ```
+## Todo
+- not always choose the fastest... need to fix
+- Haproxy should be able to initial the reload when no server is up
+- make a ladder by level for address
 
 
 ## Advices
