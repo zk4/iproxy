@@ -16,7 +16,7 @@ from requests.exceptions import ConnectionError
 
 # 保存代理的文件名
 # Save proxies file name
-CHECKED_PROXY = 'candidates'
+CHECKED_PROXY = '1_candidates'
 
 url = 'http://spys.one/en/socks-proxy-list/'
 

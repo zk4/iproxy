@@ -53,25 +53,25 @@ def gen_haproxy_cfg():
 
 def backup(proxyUrl):
 
-    with open("./good_urls.txt",'w') as f:
+    with open("./3_good_urls.txt",'w') as f:
         for k,line in good_urls.items():
             f.write(line+"\n")
 
-    with open("./google_ok_urls.txt",'w') as f:
+    with open("./2_google_ok_urls.txt",'w') as f:
         for line in google_ok_urls:
             f.write(line+"\n")
             
-    with open("./history_good_urls.txt",'a') as f:
+    with open("./history_3_good_urls.txt",'a') as f:
         f.write(f"{datetime.datetime.now().strftime('%H:%M:%S')}------------\n")
         for k,line in good_urls.items():
             f.write(f"{k} {line}\n")
 
-    if os.path.exists("./history_urls.txt"):
-        with open("./history_urls.txt",'r') as f:
+    if os.path.exists("./0_history_urls.txt"):
+        with open("./0_history_urls.txt",'r') as f:
             for line in f:
                 if not line.strip() == "":
                     history_urls.add(line.strip())
-    with open("./history_urls.txt",'w') as f:
+    with open("./0_history_urls.txt",'w') as f:
         for line in history_urls:
             f.write(line+"\n")
 
@@ -83,11 +83,11 @@ def candidate(filename):
                 yield line
 
 def candidates(all_candidates=False):
-    yield from candidate("./google_ok_urls.txt")
-    yield from candidate("./good_urls.txt")
-    yield from candidate("./candidates.txt")
-    yield from candidate("../always_test_urls.txt")
-    yield from candidate("./history_urls.txt")
+    yield from candidate("./2_google_ok_urls.txt")
+    yield from candidate("./3_good_urls.txt")
+    yield from candidate("./1_candidates.txt")
+    yield from candidate("../1_always_test_urls.txt")
+    yield from candidate("./0_history_urls.txt")
 
 
 def speedTest(proxyUrl,url) :
@@ -163,7 +163,7 @@ def main(args):
                     executor.submit(combine,proxyUrl)
 
         executor.shutdown()
-        backup("./good_urls.txt" )
+        backup("./3_good_urls.txt" )
 
         gen_haproxy_cfg()
         print("end ..")
@@ -180,9 +180,9 @@ def entry_point():
 def createParse():
     print(color.R+"WARNNING:Proxy is checked for certification validation. Don`t use public proxy to access private data when SSL invalidated! You may under MITM attack if so!"+color.W)
     parser = argparse.ArgumentParser( formatter_class=argparse.ArgumentDefaultsHelpFormatter, description="")
-    parser.add_argument('-c', '--check_file',type=str,required=False, help='local candidates file, content format schema://ip:port', default="./candidates.txt")  
+    parser.add_argument('-c', '--check_file',type=str,required=False, help='local candidates file, content format schema://ip:port', default="./1_candidates.txt")  
     parser.add_argument('-g', '--get_candidates', action='store_true', help='candidates web sites, content format schema://ip:port')  
-    parser.add_argument('-a', '--all_candidates', action='store_true',default=False, help='if test all candidates in history_urls.txt')  
+    parser.add_argument('-a', '--all_candidates', action='store_true',default=False, help='if test all candidates in 0_history_urls.txt')  
     parser.add_argument('-d', '--debug', action='store_true',default=False, help='debug mode, show more log')  
 
     return parser
