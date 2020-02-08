@@ -42,7 +42,7 @@ def gen_haproxy_cfg():
 
         # only write the fatest proxy to haproxy.cfg
         if idx == 1:
-            haproxy_basic += f"\tserver s{idx} {a} check weight {k//100} inter 3600000\n"
+            haproxy_basic += f"\tserver s{idx} {a} check weight {k//100+1} inter 3600000\n"
         idx += 1
 
     # no good url found, don`t touch haproxy.cfg.
@@ -162,7 +162,7 @@ def main(args):
                     executor.submit(combine,proxyUrl)
 
         executor.shutdown()
-        backup("./good_urls.txt")
+        backup("./good_urls.txt" )
 
         gen_haproxy_cfg()
         print("end ..")
