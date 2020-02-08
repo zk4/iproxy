@@ -90,6 +90,7 @@ def candidates(all_candidates=False):
 
 
 def speedTest(proxyUrl,url) :
+    logger.info(f"threadcount: {threading.active_count()}\n")
     logger.debug(f'speed: {proxyUrl}          ')
     start = time.time()
     proxies = { "https":proxyUrl ,"http": proxyUrl}
@@ -134,7 +135,7 @@ def combine(proxyUrl):
         try:
             speedTest(proxyUrl,"http://hnd-jp-ping.vultr.com/vultr.com.100MB.bin")
         except Exception as e:
-            logger.error("exception occures")
+            logger.error(f"exception occures {proxyUrl}")
             # logger.exception(e)
 
 def feed(count):
@@ -150,7 +151,7 @@ def main(args):
 
     if args.check_file:
         no_duplicates = set()
-        with ThreadPoolExecutor(max_workers=1000) as executor:
+        with ThreadPoolExecutor(max_workers=10) as executor:
             for proxyUrl in candidates(args.all_candidates):
 
                 proxyUrl = proxyUrl.strip()
