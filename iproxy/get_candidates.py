@@ -71,7 +71,9 @@ def get_index(xpp, xf1, xf2, xf4, xf5):
             html = rsp.text
             return html
         else:
-            exit('Can not get the website.')
+            print('Can not get the website.')
+            print(rsp.status_code)
+            exit(0)
     except ConnectionError:
         exit('Please run your proxy app and try again.')
 

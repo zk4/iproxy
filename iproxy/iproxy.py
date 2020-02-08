@@ -22,9 +22,7 @@ google_ok_urls= set()
 history_urls = set() 
 
 def check(proxyUrl,targetUrl="http://www.google.com"):
-    proxyUrl = proxyUrl.strip()
     proxies = { "https":proxyUrl ,"http": proxyUrl}
-
     r = requests.head(targetUrl,proxies = proxies,timeout=3)
     if r.status_code == 200:
         logger.debug("jump wall ok: %s" % proxyUrl)
@@ -44,7 +42,7 @@ def gen_haproxy_cfg():
 
         # only write the fatest proxy to haproxy.cfg
         if idx == 1:
-            haproxy_basic += f"\tserver s{idx} {a} check weight {k//100}\n"
+            haproxy_basic += f"\tserver s{idx} {a} check weight {k//100} inter 120000\n"
         idx += 1
 
     # no good url found, don`t touch haproxy.cfg.
@@ -91,7 +89,6 @@ def candidates(all_candidates=False):
 
 
 def speedTest(proxyUrl,url) :
-    proxyUrl = proxyUrl.strip()
     logger.debug(f'speed: {proxyUrl}          ')
     start = time.time()
     proxies = { "https":proxyUrl ,"http": proxyUrl}
@@ -109,7 +106,7 @@ def speedTest(proxyUrl,url) :
         lowerSpeedTimesMax = 20
         lowerSpeedLimit = 50
         lowerSpeedTimes = 0
-        testLengthPercentage = 0.05
+        testLengthPercentage = 0.1
         
         for chunk in r.iter_content(10240):
             dl += len(chunk)
@@ -137,7 +134,7 @@ def combine(proxyUrl):
             speedTest(proxyUrl,"http://hnd-jp-ping.vultr.com/vultr.com.100MB.bin")
         except Exception as e:
             logger.error("exception occures")
-            logger.exception(e)
+            # logger.exception(e)
 
 def feed(count):
     print("-------------",count)
@@ -152,8 +149,11 @@ def main(args):
 
     if args.check_file:
         no_duplicates = set()
-        with ThreadPoolExecutor(max_workers=100) as executor:
+        with ThreadPoolExecutor(max_workers=10) as executor:
             for proxyUrl in candidates(args.all_candidates):
+
+                proxyUrl = proxyUrl.strip()
+
                 if proxyUrl not in no_duplicates:
                     history_urls.add(proxyUrl)
                     no_duplicates.add(proxyUrl)
