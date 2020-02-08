@@ -42,7 +42,7 @@ def gen_haproxy_cfg():
 
         # only write the fatest proxy to haproxy.cfg
         if idx == 1:
-            haproxy_basic += f"\tserver s{idx} {a} check weight {k//100} inter 120000\n"
+            haproxy_basic += f"\tserver s{idx} {a} check weight {k//100} inter 3600000\n"
         idx += 1
 
     # no good url found, don`t touch haproxy.cfg.
@@ -68,10 +68,11 @@ def backup(proxyUrl):
     if os.path.exists("./history_urls.txt"):
         with open("./history_urls.txt",'r') as f:
             for line in f:
-                history_urls.add(line)
+                if not line.strip() == "":
+                    history_urls.add(line.strip())
     with open("./history_urls.txt",'w') as f:
         for line in history_urls:
-            f.write(line)
+            f.write(line+"\n")
 
 
 def candidate(filename):
@@ -149,7 +150,7 @@ def main(args):
 
     if args.check_file:
         no_duplicates = set()
-        with ThreadPoolExecutor(max_workers=10) as executor:
+        with ThreadPoolExecutor(max_workers=1000) as executor:
             for proxyUrl in candidates(args.all_candidates):
 
                 proxyUrl = proxyUrl.strip()
