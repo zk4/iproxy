@@ -10,6 +10,7 @@ import os
 import threading
 import argparse
 import logging
+import datetime   
 setup_logging()
 logger = logging.getLogger(__name__)
 
@@ -61,7 +62,7 @@ def backup(proxyUrl):
             f.write(line+"\n")
             
     with open("./history_good_urls.txt",'a') as f:
-        f.write(f"------------\n")
+        f.write(f"{datetime.datetime.now().strftime('%H:%M:%S')}------------\n")
         for k,line in good_urls.items():
             f.write(f"{k} {line}\n")
 
