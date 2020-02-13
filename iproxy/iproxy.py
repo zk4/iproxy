@@ -43,8 +43,14 @@ def gen_haproxy_cfg():
 
         # only write the fatest proxy to haproxy.cfg
         if idx == 1:
+            haproxy_basic += "backend servers\n"
+            haproxy_basic += "\tmode tcp\n"
             haproxy_basic += f"\tserver s{idx} {a} check weight {k//100+1} inter 3600000\n"
+            haproxy_basic += "\nbackend servers2\n"
+            haproxy_basic += "\tmode tcp\n"
         idx += 1
+
+        haproxy_basic += f"\tserver s{idx} {a} check weight {k//100+1} inter 3600000\n"
 
     # no good url found, don`t touch haproxy.cfg.
     if idx > 1:
@@ -86,7 +92,7 @@ def candidates(all_candidates=False):
     yield from candidate("./2_google_ok_urls.txt")
     yield from candidate("./3_good_urls.txt")
     yield from candidate("./1_candidates.txt")
-    yield from candidate("../1_always_test_urls.txt")
+    yield from candidate("./1_always_test_urls.txt")
     yield from candidate("./0_history_urls.txt")
 
 
@@ -137,7 +143,7 @@ def combine(proxyUrl):
             speedTest(proxyUrl,"http://hnd-jp-ping.vultr.com/vultr.com.100MB.bin")
         except Exception as e:
             logger.error(f"exception occures {proxyUrl}")
-            # logger.exception(e)
+            logger.exception(e)
 
 def feed(count):
     print("-------------",count)
@@ -152,7 +158,7 @@ def main(args):
 
     if args.check_file:
         no_duplicates = set()
-        with ThreadPoolExecutor(max_workers=10) as executor:
+        with ThreadPoolExecutor(max_workers=600) as executor:
             for proxyUrl in candidates(args.all_candidates):
 
                 proxyUrl = proxyUrl.strip()
@@ -160,7 +166,8 @@ def main(args):
                 if proxyUrl not in no_duplicates:
                     history_urls.add(proxyUrl)
                     no_duplicates.add(proxyUrl)
-                    executor.submit(combine,proxyUrl)
+                    e = executor.submit(combine,proxyUrl)
+
 
         executor.shutdown()
         backup("./3_good_urls.txt" )

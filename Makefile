@@ -34,15 +34,15 @@ check_down:
 
 
 watch:
-	while :; do  make proxy; sleep 600; done
+	while :; do  make proxy; sleep 3600; done
 
 get:
 	echo "The first start you need to proxy!"
-	proxychains4 python -m iproxy -g
+	proxychains4 python3 -m iproxy -g
 
 
 check: 
-	python -m iproxy -c ./candidates.txt
+	python3 -m iproxy -c ./candidates.txt
 
 haproxy:
 	haproxy -f ./haproxy.cfg -p ./haproxy.pid -D -sf `cat ./haproxy.pid`
@@ -63,12 +63,12 @@ pure-all: env-rm rm env install test run
 
 	
 upload-to-test: clean
-	python setup.py bdist_wheel --universal
+	python3 setup.py bdist_wheel --universal
 	twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
 
 upload-to-prod: clean
-	python setup.py bdist_wheel --universal
+	python3 setup.py bdist_wheel --universal
 	twine upload dist/*
 
 
