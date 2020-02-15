@@ -24,10 +24,14 @@ history_urls = set()
 
 def check(proxyUrl,targetUrl="http://www.google.com"):
     proxies = { "https":proxyUrl ,"http": proxyUrl}
-    r = requests.head(targetUrl,proxies = proxies,timeout=3)
+    logger.info(f'check {proxyUrl}')
+    r = requests.head(targetUrl,proxies = proxies,timeout=5)
+
     if r.status_code == 200:
         logger.debug("jump wall ok: %s" % proxyUrl)
         return True
+
+    logger.debug("jump wall error: %s" % proxyUrl)
     return False
 
 
@@ -43,10 +47,10 @@ def gen_haproxy_cfg():
 
         # only write the fatest proxy to haproxy.cfg
         if idx == 1:
-            haproxy_basic += "backend servers\n"
+            haproxy_basic += "backend stream\n"
             haproxy_basic += "\tmode tcp\n"
             haproxy_basic += f"\tserver s{idx} {a} check weight {k//100+1} inter 3600000\n"
-            haproxy_basic += "\nbackend servers2\n"
+            haproxy_basic += "\nbackend lb\n"
             haproxy_basic += "\tmode tcp\n"
         idx += 1
 
@@ -101,7 +105,7 @@ def speedTest(proxyUrl,url) :
     logger.debug(f'speed: {proxyUrl}          ')
     start = time.time()
     proxies = { "https":proxyUrl ,"http": proxyUrl}
-    r = requests.get(url,proxies=proxies, stream=True,timeout=3)
+    r = requests.get(url,proxies=proxies, stream=True,timeout=5)
     total_length = r.headers.get('content-length')
     dl = 0
     if total_length is None: # no content length header
@@ -126,24 +130,24 @@ def speedTest(proxyUrl,url) :
             if speed < lowerSpeedLimit:
                 lowerSpeedTimes+=1
                 if lowerSpeedTimes > lowerSpeedTimesMax:
-                    logger.debug(f'slow {speed} kb/s {proxyUrl}')
-                    return
+                    logger.info(f'slow {speed} kb/s {proxyUrl}')
+                    break
             else:
                 lowerSpeedTimes=0
-        logger.info(f'good! {speed} kb/s {proxyUrl}')
+        logger.info(f'{speed} kb/s {proxyUrl}')
         good_urls[int(speed)]= proxyUrl
 
 
 
 def combine(proxyUrl):
-    on = check(proxyUrl)
-    if on:
-        google_ok_urls.add(proxyUrl)
-        try:
+    try:
+        on = check(proxyUrl)
+        if on:
+            google_ok_urls.add(proxyUrl)
             speedTest(proxyUrl,"http://hnd-jp-ping.vultr.com/vultr.com.100MB.bin")
-        except Exception as e:
-            logger.error(f"exception occures {proxyUrl}")
-            logger.exception(e)
+    except Exception as e:
+        logger.error(f"exception occures {proxyUrl}")
+        # logger.exception(e)
 
 def feed(count):
     print("-------------",count)
