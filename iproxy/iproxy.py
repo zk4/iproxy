@@ -48,9 +48,11 @@ def gen_haproxy_cfg():
         # only write the fatest proxy to haproxy.cfg
         if idx == 1:
             haproxy_basic += "backend stream\n"
+            haproxy_basic += "balance\n first\n"
             haproxy_basic += "\tmode tcp\n"
             haproxy_basic += f"\tserver s{idx} {a} check weight {k//100+1} inter 3600000\n"
             haproxy_basic += "\nbackend lb\n"
+            haproxy_basic += "balance\n first\n"
             haproxy_basic += "\tmode tcp\n"
         idx += 1
 

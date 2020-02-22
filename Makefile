@@ -34,7 +34,7 @@ check_down:
 
 
 watch:
-	while :; do  make proxy; sleep 3600; done
+	while :; do  make proxy; sleep 360; done
 
 get:
 	echo "The first start you need to proxy!"
