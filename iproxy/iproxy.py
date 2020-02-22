@@ -48,15 +48,14 @@ def gen_haproxy_cfg():
         # only write the fatest proxy to haproxy.cfg
         if idx == 1:
             haproxy_basic += "backend stream\n"
-            haproxy_basic += "balance\n first\n"
             haproxy_basic += "\tmode tcp\n"
             haproxy_basic += f"\tserver s{idx} {a} check weight {k//100+1} inter 3600000\n"
             haproxy_basic += "\nbackend lb\n"
-            haproxy_basic += "balance\n first\n"
+            haproxy_basic += "balance  first\n"
             haproxy_basic += "\tmode tcp\n"
         idx += 1
 
-        haproxy_basic += f"\tserver s{idx} {a} check weight {k//100+1} inter 3600000\n"
+        haproxy_basic += f"\tserver s{idx} {a} check weight {k//100+1} inter 3600000 maxconn {k}\n"
 
     # no good url found, don`t touch haproxy.cfg.
     if idx > 1:
@@ -118,8 +117,8 @@ def speedTest(proxyUrl,url) :
              logger.debug(f'content length is too small {proxyUrl}')
              return 
         logger.debug(f'content lenght is {total_length}')
-        lowerSpeedTimesMax = 20
-        lowerSpeedLimit = 50
+        lowerSpeedTimesMax = 50
+        lowerSpeedLimit = 100
         lowerSpeedTimes = 0
         testLengthPercentage = 0.1
         
