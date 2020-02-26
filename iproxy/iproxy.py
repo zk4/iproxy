@@ -22,10 +22,10 @@ google_ok_urls= set()
 # saved all history_urls 
 history_urls = set() 
 
-def check(proxyUrl,targetUrl="http://www.google.com"):
+def check(proxyUrl,targetUrl="https://www.google.com.hk"):
     proxies = { "https":proxyUrl ,"http": proxyUrl}
-    logger.info(f'check {proxyUrl}')
-    r = requests.head(targetUrl,proxies = proxies,timeout=5)
+    # logger.info(f'check {proxyUrl}')
+    r = requests.head(targetUrl,proxies = proxies,timeout=3)
 
     if r.status_code == 200:
         logger.debug("jump wall ok: %s" % proxyUrl)
@@ -49,13 +49,17 @@ def gen_haproxy_cfg():
         if idx == 1:
             haproxy_basic += "backend stream\n"
             haproxy_basic += "\tmode tcp\n"
-            haproxy_basic += f"\tserver s{idx} {a} check weight {k//100+1} inter 3600000\n"
+            haproxy_basic+="\toption external-check\n"
+
+            haproxy_basic+='''\texternal-check command "/Users/zk/git/pythonPrj/iproxy/ping.sh"\n'''
+            haproxy_basic += f"\tserver s{idx} {a} check weight {k//100+1} inter 5000\n"
             haproxy_basic += "\nbackend lb\n"
-            haproxy_basic += "balance  first\n"
+            # haproxy_basic += "balance  first\n"
             haproxy_basic += "\tmode tcp\n"
         idx += 1
 
-        haproxy_basic += f"\tserver s{idx} {a} check weight {k//100+1} inter 3600000 maxconn {k}\n"
+        # haproxy_basic += f"\tserver s{idx} {a} check weight {k//100+1} inter 3600000 maxconn {k}\n"
+        haproxy_basic += f"\tserver s{idx} {a} check weight {k//100+1} inter 3600000 maxconn {k*100}\n"
 
     # no good url found, don`t touch haproxy.cfg.
     if idx > 1:
@@ -106,7 +110,7 @@ def speedTest(proxyUrl,url) :
     logger.debug(f'speed: {proxyUrl}          ')
     start = time.time()
     proxies = { "https":proxyUrl ,"http": proxyUrl}
-    r = requests.get(url,proxies=proxies, stream=True,timeout=5)
+    r = requests.get(url,proxies=proxies, stream=True,timeout=3)
     total_length = r.headers.get('content-length')
     dl = 0
     if total_length is None: # no content length header
@@ -118,9 +122,9 @@ def speedTest(proxyUrl,url) :
              return 
         logger.debug(f'content lenght is {total_length}')
         lowerSpeedTimesMax = 50
-        lowerSpeedLimit = 100
+        lowerSpeedLimit = 50
         lowerSpeedTimes = 0
-        testLengthPercentage = 0.1
+        testLengthPercentage = 0.05
         
         for chunk in r.iter_content(10240):
             dl += len(chunk)
@@ -163,7 +167,7 @@ def main(args):
 
     if args.check_file:
         no_duplicates = set()
-        with ThreadPoolExecutor(max_workers=600) as executor:
+        with ThreadPoolExecutor(max_workers=300) as executor:
             for proxyUrl in candidates(args.all_candidates):
 
                 proxyUrl = proxyUrl.strip()
