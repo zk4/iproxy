@@ -28,9 +28,13 @@ coverage:
 	pytest --cov=iproxy/ tests/
 
 proxy: get check haproxy
+	rm proxy_down
+	rm searhing
 
-check_down:
-	./check_down.sh
+auto:
+	./auto_montior.sh
+
+
 
 
 watch:
