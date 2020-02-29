@@ -13,7 +13,7 @@ RPT=$4
 proxy_down=/Users/zk/git/pythonPrj/iproxy/proxy_down
 echo check ...$(date) >/Users/zk/git/pythonPrj/iproxy/check.log
 
-curl --connect-timeout 2 -x "socks5h://$RIP:$RPT" -I https://www.google.com.hk  
+curl --connect-timeout 3 -x "socks5h://$RIP:$RPT" -I https://www.google.com.hk  
 
 if [ $? -eq 0 ]
 	 then
