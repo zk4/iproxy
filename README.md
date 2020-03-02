@@ -1,13 +1,13 @@
 ## intro
 Since a lot of proxy tools needs a VPS to work. If your computer connecting VPS is slow, then you are doomed..
-This project works in a trandtional way. Find enough addreees, choose the best one for proxy. and auto reload it by haproxy. 
-
+This project works in a trandtional way and VPS way. Find enough addreees includeing your VPS address, choose the best one for proxy. and auto reload it by haproxy.  VPS ensure that you can connect the outer world.
 
 There are lot of prons by trandtional way:
-- You are always swithing proxy address(default every 1 hour), make you being tracked harder.
+- You are always swithing proxy address, make you being tracked harder.
 - You are always using the fatest proxy this tool can ever find.
 - It does not matter even using VPS for proxing, only if VPS is the fatest.
 - Reload haproxy is seamless enough. You won't even notice it reloaded.
+- Health check is quick for recovery.
 
 ## config files
 `always_test_urls.txt`
@@ -32,12 +32,11 @@ addresses used to on good_urls.
 
 ## usage 
 ``` bash
-make proxy 
-	
+brew install haproxy
+./auto_montior.sh
 ```
+
 ## Todo
-- not always choose the fastest... need to fix
-- Haproxy should be able to initial the reload when no server is up
 - make a ladder by level for address
 - incremental enable haproxy 
 
