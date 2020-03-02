@@ -5,6 +5,7 @@ make haproxy
 while :; do  
 	echo $count
 	if test -f "./proxy_down"; then
+		# temparay swith to loadblance
 		make check
 		make haproxy
 		rm proxy_down

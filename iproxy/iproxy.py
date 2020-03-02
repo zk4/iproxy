@@ -36,35 +36,39 @@ def check(proxyUrl,targetUrl="https://www.google.com.hk"):
 
 
 def gen_haproxy_cfg():
-    haproxy_basic = ''
+    haproxy_cfg = ''
     with open("./haproxy_basic.cfg",'r') as f:
         for line in f:
-            haproxy_basic+= line
+            haproxy_cfg+= line
     idx = 1
+    haproxy_lb_cfg = haproxy_cfg
     for k,line in dict(sorted(good_urls.items(),reverse=True)).items():
         a = ":".join(line.split("//")[1:])
         print(a)
 
         # only write the fatest proxy to haproxy.cfg
         if idx == 1:
-            haproxy_basic += "backend stream\n"
-            haproxy_basic += "\tmode tcp\n"
-            haproxy_basic+="\toption external-check\n"
+            haproxy_cfg += "backend stream\n"
+            haproxy_cfg += "\tmode tcp\n"
+            haproxy_cfg+="\toption external-check\n"
 
-            haproxy_basic+='''\texternal-check command "/Users/zk/git/pythonPrj/iproxy/ping.sh"\n'''
-            haproxy_basic += f"\tserver s{idx} {a} check weight {k//100+1} inter 5000\n"
-            haproxy_basic += "\nbackend lb\n"
-            # haproxy_basic += "balance  first\n"
-            haproxy_basic += "\tmode tcp\n"
+            haproxy_cfg+='''\texternal-check command "/Users/zk/git/pythonPrj/iproxy/ping.sh"\n'''
+            haproxy_cfg += f"\tserver s{idx} {a} check weight {k//100+1} inter 5000\n"
+            haproxy_cfg += "\nbackend lb\n"
+            # haproxy_cfg += "balance  first\n"
+            haproxy_cfg += "\tmode tcp\n"
+            haproxy_lb_cfg = haproxy_cfg
         idx += 1
 
-        # haproxy_basic += f"\tserver s{idx} {a} check weight {k//100+1} inter 3600000 maxconn {k}\n"
-        haproxy_basic += f"\tserver s{idx} {a} check weight {k//100+1} inter 3600000 maxconn {k*100}\n"
+        # haproxy_cfg += f"\tserver s{idx} {a} check weight {k//100+1} inter 3600000 maxconn {k}\n"
+        haproxy_cfg += f"\tserver s{idx} {a} check weight {k//100+1} inter 3600000 maxconn {k*100}\n"
 
     # no good url found, don`t touch haproxy.cfg.
     if idx > 1:
         with open("./haproxy.cfg",'w') as f:
-            f.write(haproxy_basic)
+            f.write(haproxy_cfg)
+        with open("./haproxy_lb.cfg",'w') as f:
+            f.write(haproxy_lb_cfg)
 
 def backup(proxyUrl):
 

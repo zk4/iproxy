@@ -51,6 +51,8 @@ check:
 haproxy:
 	haproxy -f ./haproxy.cfg -p ./haproxy.pid -D -sf `cat ./haproxy.pid`
 
+haproxy:
+	haproxy -f ./haproxy_lb.cfg -p ./haproxy.pid -D -sf `cat ./haproxy.pid`
 
 install: uninstall
 	pip install . 
