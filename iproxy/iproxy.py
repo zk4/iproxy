@@ -75,12 +75,13 @@ def gen_haproxy_cfg():
             haproxy_lb_cfg+= "\tdefault_backend lb\n"
             haproxy_lb_cfg+= "\nbackend lb\n"
             haproxy_lb_cfg+= "\tmode tcp\n"
-            haproxy_lb_cfg+='''\texternal-check command "/Users/zk/git/pythonPrj/iproxy/ping.sh"\n'''
+            haproxy_lb_cfg+= "\toption external-check\n"
+            haproxy_lb_cfg+='''\texternal-check command "/Users/zk/git/pythonPrj/iproxy/ping_only.sh"\n'''
         idx += 1
 
         # haproxy_cfg += f"\tserver s{idx} {a} check weight {k//100+1} inter 3600000 maxconn {k}\n"
         haproxy_cfg += f"\tserver s{idx} {a} check  weight {k//100+1} inter 3600000 maxconn {k*100}\n"
-        haproxy_lb_cfg += f"\tserver s{idx} {a} check weight {k//100+1} inter 3600000 maxconn {k*100}\n"
+        haproxy_lb_cfg += f"\tserver s{idx} {a} check weight {k//100+1} inter 160000\n"
 
     # no good url found, don`t touch haproxy.cfg.
     if idx > 1:
