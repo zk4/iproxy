@@ -22,12 +22,12 @@ google_ok_urls= set()
 # saved all history_urls 
 history_urls = set() 
 
-def check(proxyUrl,targetUrl="https://www.google.com.hk"):
+def check(proxyUrl,targetUrl="http://google.com/generate_204"):
     proxies = { "https":proxyUrl ,"http": proxyUrl}
     # logger.info(f'check {proxyUrl}')
     r = requests.head(targetUrl,proxies = proxies,timeout=3)
 
-    if r.status_code == 200:
+    if r.status_code >= 200 and r.status_code <=400:
         logger.debug("jump wall ok: %s" % proxyUrl)
         return True
 
@@ -40,8 +40,14 @@ def gen_haproxy_cfg():
     with open("./haproxy_basic.cfg",'r') as f:
         for line in f:
             haproxy_cfg+= line
-    idx = 1
     haproxy_lb_cfg = haproxy_cfg
+
+    haproxy_cfg+= "frontend stream\n"
+    haproxy_cfg+= "\tbind *:5992\n"
+    haproxy_cfg+="\tmode tcp\n"
+    haproxy_cfg+="\tdefault_backend stream\n"
+
+    idx = 1
     for k,line in dict(sorted(good_urls.items(),reverse=True)).items():
         a = ":".join(line.split("//")[1:])
         print(a)
@@ -54,14 +60,27 @@ def gen_haproxy_cfg():
 
             haproxy_cfg+='''\texternal-check command "/Users/zk/git/pythonPrj/iproxy/ping.sh"\n'''
             haproxy_cfg += f"\tserver s{idx} {a} check weight {k//100+1} inter 5000\n"
-            haproxy_cfg += "\nbackend lb\n"
-            # haproxy_cfg += "balance  first\n"
-            haproxy_cfg += "\tmode tcp\n"
-            haproxy_lb_cfg = haproxy_cfg
+
+
+            haproxy_cfg+= "frontend lb\n"
+            haproxy_cfg+= "\tbind *:5993\n"
+            haproxy_cfg+= "\tmode tcp\n"
+            haproxy_cfg+= "\tdefault_backend lb\n"
+            haproxy_cfg+= "\nbackend lb\n"
+            haproxy_cfg+= "\tmode tcp\n"
+
+            haproxy_lb_cfg+= "frontend lb\n"
+            haproxy_lb_cfg+= "\tbind *:5992\n"
+            haproxy_lb_cfg+= "\tmode tcp\n"
+            haproxy_lb_cfg+= "\tdefault_backend lb\n"
+            haproxy_lb_cfg+= "\nbackend lb\n"
+            haproxy_lb_cfg+= "\tmode tcp\n"
+            haproxy_lb_cfg+='''\texternal-check command "/Users/zk/git/pythonPrj/iproxy/ping.sh"\n'''
         idx += 1
 
         # haproxy_cfg += f"\tserver s{idx} {a} check weight {k//100+1} inter 3600000 maxconn {k}\n"
-        haproxy_cfg += f"\tserver s{idx} {a} check weight {k//100+1} inter 3600000 maxconn {k*100}\n"
+        haproxy_cfg += f"\tserver s{idx} {a} check  weight {k//100+1} inter 3600000 maxconn {k*100}\n"
+        haproxy_lb_cfg += f"\tserver s{idx} {a} check weight {k//100+1} inter 3600000 maxconn {k*100}\n"
 
     # no good url found, don`t touch haproxy.cfg.
     if idx > 1:
@@ -126,9 +145,9 @@ def speedTest(proxyUrl,url) :
              return 
         logger.debug(f'content lenght is {total_length}')
         lowerSpeedTimesMax = 50
-        lowerSpeedLimit = 50
+        lowerSpeedLimit = 100
         lowerSpeedTimes = 0
-        testLengthPercentage = 0.05
+        testLengthPercentage = 0.1
         
         for chunk in r.iter_content(10240):
             dl += len(chunk)

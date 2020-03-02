@@ -1,11 +1,17 @@
 #!/bin/bash
 
 count=0
-make haproxy
+# start lb first to access web as quick as possiable
+make haproxy_lb
+# then no matter what,get the newest list, and choose the fatest one
+make proxy
+
 while :; do  
 	echo $count
 	if test -f "./proxy_down"; then
 		# temparay swith to loadblance
+		make haproxy_lb
+		# don`t search, just use the cache 
 		make check
 		make haproxy
 		rm proxy_down
