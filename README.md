@@ -4,9 +4,9 @@ This project works in a trandtional way and VPS way. Find enough addreesses incl
 
 There are lot of prons by trandtional way:
 - You are always swithing proxy address, make you being tracked harder.
-- You are always using the fatest proxy this tool can ever find.
-- It does not matter even using VPS for proxing, only if VPS is the fatest.
-- Reload haproxy is seamless enough. You won't even notice it reloaded.
+- You are always using the fastest proxy this tool can ever find.
+- Your own VPS is the choice, only if VPS is the fastest.
+- Reload haproxy is seamless enough. You won't even notice.
 - Health check is quick for recovery.
 
 ## config files
