@@ -1,6 +1,6 @@
 ## intro
 Since a lot of proxy tools needs a VPS to work. If your computer connecting VPS is slow, then you are doomed..
-This project works in a trandtional way and VPS way. Find enough addreees includeing your VPS address, choose the best one for proxy. and auto reload it by haproxy.  VPS ensure that you can connect the outer world.
+This project works in a trandtional way and VPS way. Find enough addreesses including your VPS address, choose the best one for proxy. and auto reload it by haproxy.  VPS ensure that you can connect the outer world.
 
 There are lot of prons by trandtional way:
 - You are always swithing proxy address, make you being tracked harder.
